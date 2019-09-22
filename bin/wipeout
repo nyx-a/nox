@@ -1,19 +1,9 @@
 #! /usr/bin/env ruby
 
-SCRPT_AUTHOR    = 'nyx-a'
-SCRPT_VERSION   = '2007 11/29 thu'
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-
-DELETELEVEL = [
-  ['*~', '.*~'],
-  ['a.out', '*.o'],
-]
-
-def filedate (fname)
-  mtime = File.mtime(fname)
+def filedate fname
+  mtime = File.mtime fname
   [
-    mtime.strftime('%Y %m/%d %H:%M:%S %Z'),
+    mtime.strftime('%Y %m/%d %H:%M'),
     '(',
     '%10.1f' % [(Time.now - mtime) / 3600],
     'Hour )',
@@ -21,16 +11,10 @@ def filedate (fname)
   ].join(' ')
 end
 
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-
-GAUGE = ARGV.join.size
-
 done = false
-for pattern in DELETELEVEL[0..GAUGE].flatten
-  Dir.glob(pattern) do |filename|
-    puts filedate(filename)
-    File.unlink filename
-    done = true
-  end
+Dir.glob(['*~', '.*~']) do |filename|
+  puts filedate filename
+  File.unlink filename
+  done = true
 end
 puts if done
