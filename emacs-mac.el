@@ -216,14 +216,27 @@
 
 (setq load-path (cons "~/nox/el" load-path))
 (load-library "wrid.el")
-(setq wrid-directory "~/diary")
+(setq wrid-directory "~/D/diary")
 
 (defun now ()
   (interactive)
   (insert (format-time-string "%H:%M" (current-time))))
 
-(global-set-key "\C-q\C-d" 'now)
+(defun sewing-machine (&optional length)
+  (interactive "P")
+  (if (equal length nil) (setq length 59))
+  (back-to-indentation)
+  (reindent-then-newline-and-indent)
+  (previous-line)
+  (indent-for-tab-command)
+  (comment-indent)
+  (while (< (current-column) length) (insert " -"))
+  (back-to-indentation)
+  (next-line))
+
 (global-set-key "\C-q\C-g" 'keyboard-quit)
+(global-set-key "\C-q\C-d" 'now)
+(global-set-key "\C-q\C-n" 'sewing-machine)
 (global-set-key "\C-qv" 'describe-variable)
 (global-set-key "\C-qk" 'describe-key)
 (global-set-key "\C-qf" 'describe-function)
@@ -244,3 +257,4 @@
      (kbd (format "s-%c" i))
      (lookup-key global-map (kbd (format "M-%c" i))))
     (setq i (1+ i))))
+
