@@ -1,0 +1,43 @@
+#! /usr/bin/env ruby
+
+require 'optparse'
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def rwx b
+  [
+    (b & 0b100 != 0 ? 'r' : '-'),
+    (b & 0b010 != 0 ? 'w' : '-'),
+    (b & 0b001 != 0 ? 'x' : '-'),
+  ].join
+end
+
+def rwxrwxrwx d
+  [
+    rwx(d >> 6),
+    rwx(d >> 3),
+    rwx(d >> 0),
+  ].join
+end
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+op = OptionParser.new
+op.on("--pretend", "doesn't delete actually") do |p|
+  puts '(pretend mode)'
+  $pretend = true
+end
+op.parse! ARGV
+
+done = false
+for i in Dir.children('.').select(&File.method(:zero?))
+  stat = File.stat i
+  puts [
+    rwxrwxrwx(stat.mode),
+    stat.mtime.strftime('%Y-%m-%d %H:%M:%S'),
+    i,
+  ].join ' '
+  unless $pretend
+    File.unlink i
+    done = false
+  end
+end
+puts if done
