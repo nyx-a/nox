@@ -56,3 +56,8 @@ export PATH="$HOME/.cargo/bin:$PATH"
 export CPPFLAGS="-I/usr/local/opt/qt5/include"
 export LDFLAGS="-L/usr/local/opt/qt5/lib"
 export PATH=/usr/local/opt/qt5/bin:$PATH
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion

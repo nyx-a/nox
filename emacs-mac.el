@@ -203,6 +203,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(region ((t (:background "dark slate gray"))))
  '(show-paren-match ((t (:background "DarkCyan" :foreground "LightYellow"))))
  '(whitespace-empty ((t (:background "saddle brown" :foreground "firebrick"))))
  '(whitespace-newline ((t (:foreground "gray42"))))
@@ -220,7 +221,7 @@
 
 (defun now ()
   (interactive)
-  (insert (format-time-string "%H:%M" (current-time))))
+  (insert (format-time-string "%H:%M:%S" (current-time))))
 
 (defun sewing-machine (&optional length)
   (interactive "P")
