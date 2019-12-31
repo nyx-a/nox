@@ -14,11 +14,12 @@ alias mv='mv -iv'
 alias rm='rm -v'
 alias grep='grep --color=auto'
 alias emacs='emacs -nw'
-alias t='date +%Y-%m%d-%H%M%S'
+alias u='pushd'
+alias o='popd'
 
 export TERM="xterm-256color"
 
-export PATH='~/nox/bin:/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin'
+export PATH='~/nox/bin:/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin:~/.roswell/bin'
 
 export LDFLAGS="-L/usr/local/opt/readline/lib"
 export CPPFLAGS="-I/usr/local/opt/readline/include"

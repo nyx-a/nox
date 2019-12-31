@@ -1,4 +1,7 @@
 
+(setq load-path (cons "~/nox/el" load-path))
+(load-library "local.el")
+
 (require 'package)
 (add-to-list
  'package-archives
@@ -17,16 +20,15 @@
     (let ((mac-input-source (mac-input-source)))
       (set-cursor-color
        (if (string-match "\\.US$" mac-input-source)
-           "salmon" "dark orchid"))))
+           "tomato" "BlueViolet"))))
   (add-hook 'mac-selected-keyboard-input-source-change-hook
             'my-mac-selected-keyboard-input-source-chage-function))
 
 (if (equal window-system 'mac)
     (progn
-      (let* ((size 12)
-             (asciifont "HackGen");(asciifont "monospace")
+      (let* ((asciifont "HackGen");(asciifont "monospace")
              (jpfont "HackGen");(jpfont "Osaka")
-             (h (* size 10))
+             (h (* fontsize 10))
              (fontspec (font-spec :family asciifont))
              (jp-fontspec (font-spec :family jpfont)))
         (set-face-attribute 'default nil :family asciifont :height h)
@@ -101,10 +103,8 @@
 (global-set-key "\C-\\" 'indent-region)
 ;;(global-set-key "\C-\\" 'bury-buffer)
 
-(global-set-key (kbd "M-z")
+(global-set-key (kbd "C-;")
                 (lambda () (interactive) (switch-to-buffer nil)))
-(global-set-key (kbd "M-n") 'switch-to-next-buffer)
-(global-set-key (kbd "M-p") 'switch-to-prev-buffer)
 
 (global-set-key "\M-o" 'toggle-truncate-lines)
 (global-set-key "\M-g" 'goto-line)
@@ -143,7 +143,7 @@
       (set-face-foreground 'default "gray83")
       (set-face-background 'default "black")
       ;;(set-face-background 'default "gray25")
-      (set-face-background 'cursor "salmon")
+      (set-face-background 'cursor "tomato")
       (set-face-background 'mouse "yellow")))
 
 ;; outline-mode
@@ -182,7 +182,8 @@
                          ))
 (setq whitespace-display-mappings
       '((tab-mark     ?\t    [?\xbb ?\t] )
-        (newline-mark ?\n    [?\x2039 ?\n] )))
+        ;(newline-mark ?\n    [?\x2039 ?\n] )
+        (newline-mark ?\n    [?\x21A9 ?\n] )))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -194,7 +195,7 @@
  '(blink-cursor-interval 0.1)
  '(blink-cursor-mode t)
  '(comment-column 2)
- '(package-selected-packages (quote (magit yaml-mode go-mode enh-ruby-mode)))
+ '(package-selected-packages (quote (rust-mode magit yaml-mode go-mode enh-ruby-mode)))
  '(show-paren-delay 0)
  '(visible-cursor t))
 
@@ -215,9 +216,8 @@
             (setq indent-tabs-mode nil)
             (setq comment-column 4)))
 
-(setq load-path (cons "~/nox/el" load-path))
 (load-library "wrid.el")
-(setq wrid-directory "~/D/diary")
+(setq wrid-directory "~/D/Diary")
 
 (defun now ()
   (interactive)
@@ -231,7 +231,7 @@
   (previous-line)
   (indent-for-tab-command)
   (comment-indent)
-  (while (< (current-column) length) (insert " -"))
+  (while (< (current-column) length) (insert "- "))
   (back-to-indentation)
   (next-line))
 
@@ -258,4 +258,3 @@
      (kbd (format "s-%c" i))
      (lookup-key global-map (kbd (format "M-%c" i))))
     (setq i (1+ i))))
-
