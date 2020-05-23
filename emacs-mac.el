@@ -26,18 +26,16 @@
 
 (if (equal window-system 'mac)
     (progn
-      (let* ((asciifont "HackGen");(asciifont "monospace")
-             (jpfont "HackGen");(jpfont "Osaka")
-             (h (* fontsize 10))
-             (fontspec (font-spec :family asciifont))
-             (jp-fontspec (font-spec :family jpfont)))
-        (set-face-attribute 'default nil :family asciifont :height h)
+      (let* ((h (* my-fontsize 10))
+             (fontspec (font-spec :family my-asciifont))
+             (jp-fontspec (font-spec :family my-jpfont)))
+        (set-face-attribute 'default nil :family my-asciifont :height h)
         (set-fontset-font nil 'japanese-jisx0208 jp-fontspec))
       (set-frame-height (next-frame) 60)
       (set-frame-width (next-frame) 70)
       (set-scroll-bar-mode nil)
       (tool-bar-mode 0)
-      (set-frame-parameter (selected-frame) 'alpha '(85 80))
+      (set-frame-parameter (selected-frame) 'alpha my-window-alpha)
       ;; (setq mac-command-modifier (quote meta))
       ;; (setq mac-option-modifier 'nil)
       ;; (define-key global-map [ns-drag-file] 'ns-find-file)
@@ -67,9 +65,6 @@
 (setq kept-new-versions 10)
 (setq delete-old-versions t)
 
-;;;;(iswitchb-default-keybindings)
-;;;;(setq iswitchb-case nil)
-;;;;(iswitchb-mode t)
 (icomplete-mode)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
@@ -101,7 +96,6 @@
 (define-key dired-mode-map "\C-t" 'other-window)
 
 (global-set-key "\C-\\" 'indent-region)
-;;(global-set-key "\C-\\" 'bury-buffer)
 
 (global-set-key (kbd "C-;")
                 (lambda () (interactive) (switch-to-buffer nil)))
@@ -135,39 +129,12 @@
 (setq auto-save-interval 1000)
 (setq auto-save-timeout 600)
 
-(if window-system
-    (progn
-      (set-face-foreground 'mode-line "white")
-      (set-face-background 'mode-line "red")
-      ;;(set-face-background 'mode-line "tomato3")
-      (set-face-foreground 'default "gray83")
-      (set-face-background 'default "black")
-      ;;(set-face-background 'default "gray25")
-      (set-face-background 'cursor "tomato")
-      (set-face-background 'mouse "yellow")))
-
 ;; outline-mode
 (setq outline-regexp "#+")
 (add-to-list 'auto-mode-alist '("\\.diary\\.txt\\'" . outline-mode))
 (add-to-list 'auto-mode-alist '("\\.note\\.txt\\'" . outline-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . outline-mode))
 (add-hook 'outline-mode-hook 'outline-hide-body)
-
-;; face
-(set-face-foreground 'font-lock-function-name-face     "#92db00")          ; 1 88ff11
-;;(set-face-bold-p 'font-lock-function-name-face t)                          ; 1
-;;(set-face-background 'font-lock-function-name-face     "#5b6b00")          ; 1 6f770e
-(set-face-foreground 'font-lock-variable-name-face     "#ffd700")          ; 2 gold
-(set-face-foreground 'font-lock-keyword-face           "#ffa500")          ; 3 orange
-(set-face-foreground 'font-lock-comment-face           "#cd6600")          ; 4 DarkOrange3
-(set-face-foreground 'font-lock-type-face              "#a0522d")          ; 5 sienna
-(set-face-foreground 'font-lock-constant-face          "#b8860b")          ; 6 dark goldenrod
-(set-face-foreground 'font-lock-builtin-face           "#b8b50b")          ; 7
-(set-face-foreground 'font-lock-string-face            "#9cd62a")          ; 8
-
-(set-face-foreground 'font-lock-comment-delimiter-face "#58c924")          ; green
-(set-face-foreground 'font-lock-preprocessor-face      "yellow")
-(set-face-foreground 'font-lock-negation-char-face     "red")
 
 ;; white spaces
 (setq whitespace-action '(cleanup auto-cleanup))
@@ -181,21 +148,28 @@
                          newline-mark
                          ))
 (setq whitespace-display-mappings
-      '((tab-mark     ?\t    [?\xbb ?\t] )
-        ;(newline-mark ?\n    [?\x2039 ?\n] )
-        (newline-mark ?\n    [?\x21A9 ?\n] )))
+      `((tab-mark     ?\t    [?\xbb ?\t] )
+        (newline-mark ,@my-newline-mark)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default default default italic underline success warning error])
+ '(ansi-color-names-vector
+   ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(blink-cursor-blinks 0)
  '(blink-cursor-delay 60)
  '(blink-cursor-interval 0.1)
  '(blink-cursor-mode t)
  '(comment-column 2)
- '(package-selected-packages (quote (rust-mode magit yaml-mode go-mode enh-ruby-mode)))
+ '(custom-enabled-themes (quote (adwaita)))
+ '(package-selected-packages
+   (quote
+    (rainbow-mode rainbow-delimiters company ac-cider cider rust-mode magit yaml-mode go-mode enh-ruby-mode)))
+ '(rainbow-delimiters-max-face-count 5)
  '(show-paren-delay 0)
  '(visible-cursor t))
 
@@ -204,24 +178,48 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(region ((t (:background "dark slate gray"))))
- '(show-paren-match ((t (:background "DarkCyan" :foreground "LightYellow"))))
+ '(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face :foreground "#c60"))))
+ '(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face :foreground "#fd0"))))
+ '(rainbow-delimiters-depth-3-face ((t (:inherit rainbow-delimiters-base-face :foreground "#7f0"))))
+ '(rainbow-delimiters-depth-4-face ((t (:inherit rainbow-delimiters-base-face :foreground "#0ee"))))
+ '(rainbow-delimiters-depth-5-face ((t (:inherit rainbow-delimiters-base-face :foreground "#0af"))))
+ '(region ((t (:background "#455"))))
+ '(show-paren-match ((t (:background "#477"))))
  '(whitespace-empty ((t (:background "saddle brown" :foreground "firebrick"))))
  '(whitespace-newline ((t (:foreground "gray42"))))
  '(whitespace-tab ((t (:foreground "gray35"))))
  '(whitespace-trailing ((t (:background "gray30")))))
+
+
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq indent-tabs-mode nil)
             (setq comment-column 4)))
 
+(add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'lisp-interacton-mode-hook 'rainbow-delimiters-mode)
+
+(global-company-mode)
+(setq company-global-modes '(not outline-mode text-mode))
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+(setq company-selection-wrap-around t)
+(define-key company-active-map (kbd "C-h") nil)
+(define-key company-active-map (kbd "C-M-p") 'company-select-previous)
+(define-key company-active-map (kbd "C-M-n") 'company-select-next)
+(define-key company-search-map (kbd "C-M-p") 'company-select-previous)
+(define-key company-search-map (kbd "C-M-n") 'company-select-next)
+
 (load-library "wrid.el")
 (setq wrid-directory "~/D/Diary")
 
 (defun now ()
   (interactive)
-  (insert (format-time-string "%H:%M:%S" (current-time))))
+  (insert (format-time-string "%H:%M" (current-time))))
 
 (defun sewing-machine (&optional length)
   (interactive "P")
@@ -258,3 +256,30 @@
      (kbd (format "s-%c" i))
      (lookup-key global-map (kbd (format "M-%c" i))))
     (setq i (1+ i))))
+
+(global-set-key (kbd "A-<tab>") 'other-frame)
+(global-set-key (kbd "C-M-t") 'other-frame)
+
+;; toys
+(defun 0to1 (&optional presicion)
+  ((lambda (scale)
+     (/ (random scale) (float scale)))
+   (expt 10 (or presicion 5))))
+
+(defun coin-toss (front back)
+  (if (zerop (random 2)) front back))
+
+(defun noise (value coefficient)
+  (+ value (* value coefficient (0to1) (coin-toss +1 -1))))
+
+
+(defun stairs (a b remaining)
+  (cons a (if (<= remaining 0)
+              nil
+            (stairs (+ a b) b (1- remaining)))))
+
+(defun gradation (from to division)
+  (mapcar (lambda (x) (format "%x" x))
+          (stairs from
+                    (/ (- to from) (float division))
+                    division)))
