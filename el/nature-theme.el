@@ -1,3 +1,10 @@
+
+(setq default-bg   (if (equal window-system 'mac) "#161616" "color-16"))
+(setq mode-line-fg (if (equal window-system 'mac) "#f5deb3" "black"))
+(setq mode-line-bg (if (equal window-system 'mac) "#b03000" "white"))
+
+
+
 (deftheme nature
   "Daishizen")
 
@@ -23,12 +30,12 @@
  '(rainbow-delimiters-depth-4-face
    ((t (:inherit rainbow-delimiters-base-face :foreground "#0ed"))))
 
- '(default ((t (:foreground "#ccc" :background "color-16")))) ; 161616
+ `(default ((t (:foreground "#ccc" :background ,default-bg))))
  '(fringe  ((t (:background "#141414"))))
  '(cursor  ((t (:foreground "#fff" :background "#e5cead"))))
 
  '(highlight ((t (:foreground "#000" :background "#b0b09a"))))
- '(minibuffer-prompt ((t (:foreground "#ffb90f"))))
+ '(minibuffer-prompt ((t (:foreground "#ff8010"))))
 
  '(font-lock-function-name-face ((t (:foreground "#82eb00")))) ; 1
  '(font-lock-variable-name-face ((t (:foreground "#e6d000")))) ; 2
@@ -47,8 +54,8 @@
  '(font-lock-doc-string-face ((t (:foreground "violet"))))
  '(font-lock-warning-face    ((t (:foreground "#d39" :bold t))))
 
- '(mode-line
-   ((t (:foreground "white" :background "red" :box nil))))  ;;f5deb3 ; b30
+ `(mode-line
+   ((t (:foreground ,mode-line-fg :background ,mode-line-bg :box nil))))
  '(mode-line-highlight
    ((t (:foreground "#fff" :box nil))))
  '(mode-line-inactive
