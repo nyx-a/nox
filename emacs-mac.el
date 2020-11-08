@@ -1,6 +1,17 @@
 
+(require 'seq)
+
+(setq hostname (let*
+                   ((host (system-name))
+                    (dot (seq-position host ?.)))
+                 (downcase (seq-subseq host 0 dot))))
+
 (setq load-path (cons "~/nox/el" load-path))
 (load-library "local.el")
+(load-library "random.el")
+(load-library "misc.el")
+(load-library "wrid.el")
+(setq wrid-directory "~/D/Diary")
 
 (require 'package)
 (add-to-list
@@ -14,34 +25,18 @@
 
 (prefer-coding-system 'utf-8)
 
-(when (fboundp 'mac-input-source)
-  (defun my-mac-selected-keyboard-input-source-chage-function ()
-    "英語のときはカーソルの色を***に、日本語のときは***にします."
-    (let ((mac-input-source (mac-input-source)))
-      (set-cursor-color
-       (if (string-match "\\.US$" mac-input-source)
-           "tomato" "BlueViolet"))))
-  (add-hook 'mac-selected-keyboard-input-source-change-hook
-            'my-mac-selected-keyboard-input-source-chage-function))
-
 (if (equal window-system 'mac)
     (progn
-      (let* ((asciifont "HackGen");(asciifont "monospace")
-             (jpfont "HackGen");(jpfont "Osaka")
-             (h (* fontsize 10))
-             (fontspec (font-spec :family asciifont))
-             (jp-fontspec (font-spec :family jpfont)))
-        (set-face-attribute 'default nil :family asciifont :height h)
+      (let* ((h (* my-fontsize 10))
+             (fontspec (font-spec :family my-asciifont))
+             (jp-fontspec (font-spec :family my-jpfont)))
+        (set-face-attribute 'default nil :family my-asciifont :height h)
         (set-fontset-font nil 'japanese-jisx0208 jp-fontspec))
       (set-frame-height (next-frame) 60)
       (set-frame-width (next-frame) 70)
       (set-scroll-bar-mode nil)
       (tool-bar-mode 0)
-      (set-frame-parameter (selected-frame) 'alpha '(85 80))
-      ;; (setq mac-command-modifier (quote meta))
-      ;; (setq mac-option-modifier 'nil)
-      ;; (define-key global-map [ns-drag-file] 'ns-find-file)
-      ))
+      (set-frame-parameter (selected-frame) 'alpha my-window-alpha)))
 
 (menu-bar-mode 0)
 (setq initial-scratch-message nil)
@@ -60,17 +55,16 @@
 (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
 
-(setq backup-directory-alist '(("." . "~/.Emacs.Backups")))
-(setq backup-by-copying t)
-(setq version-control t)
+(setq backup-directory-alist '(("." . "~/.backupfiles")))
+(setq backup-by-copying nil)
+(setq backup-by-copying-when-linked t)
 (setq kept-old-versions 0)
-(setq kept-new-versions 10)
+(setq kept-new-versions 5)
 (setq delete-old-versions t)
 
-;;;;(iswitchb-default-keybindings)
-;;;;(setq iswitchb-case nil)
-;;;;(iswitchb-mode t)
-(icomplete-mode)
+(setq version-control t)
+
+(icomplete-mode 1)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
@@ -96,15 +90,15 @@
 (global-set-key "\C-h" 'backward-delete-char)
 (global-set-key "\C-t" 'other-window)
 (global-set-key "\C-x\C-z" nil)
+(global-set-key "\M-z" 'zap-up-to-char)
 
 (load "dired")
 (define-key dired-mode-map "\C-t" 'other-window)
 
 (global-set-key "\C-\\" 'indent-region)
-;;(global-set-key "\C-\\" 'bury-buffer)
 
-(global-set-key (kbd "C-;")
-                (lambda () (interactive) (switch-to-buffer nil)))
+(global-set-key "\M-n"(lambda () (interactive) (switch-to-buffer nil)))
+(global-set-key "\M-p"(lambda () (interactive) (switch-to-buffer nil)))
 
 (global-set-key "\M-o" 'toggle-truncate-lines)
 (global-set-key "\M-g" 'goto-line)
@@ -135,39 +129,12 @@
 (setq auto-save-interval 1000)
 (setq auto-save-timeout 600)
 
-(if window-system
-    (progn
-      (set-face-foreground 'mode-line "white")
-      (set-face-background 'mode-line "red")
-      ;;(set-face-background 'mode-line "tomato3")
-      (set-face-foreground 'default "gray83")
-      (set-face-background 'default "black")
-      ;;(set-face-background 'default "gray25")
-      (set-face-background 'cursor "tomato")
-      (set-face-background 'mouse "yellow")))
-
 ;; outline-mode
 (setq outline-regexp "#+")
 (add-to-list 'auto-mode-alist '("\\.diary\\.txt\\'" . outline-mode))
 (add-to-list 'auto-mode-alist '("\\.note\\.txt\\'" . outline-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . outline-mode))
 (add-hook 'outline-mode-hook 'outline-hide-body)
-
-;; face
-(set-face-foreground 'font-lock-function-name-face     "#92db00")          ; 1 88ff11
-;;(set-face-bold-p 'font-lock-function-name-face t)                          ; 1
-;;(set-face-background 'font-lock-function-name-face     "#5b6b00")          ; 1 6f770e
-(set-face-foreground 'font-lock-variable-name-face     "#ffd700")          ; 2 gold
-(set-face-foreground 'font-lock-keyword-face           "#ffa500")          ; 3 orange
-(set-face-foreground 'font-lock-comment-face           "#cd6600")          ; 4 DarkOrange3
-(set-face-foreground 'font-lock-type-face              "#a0522d")          ; 5 sienna
-(set-face-foreground 'font-lock-constant-face          "#b8860b")          ; 6 dark goldenrod
-(set-face-foreground 'font-lock-builtin-face           "#b8b50b")          ; 7
-(set-face-foreground 'font-lock-string-face            "#9cd62a")          ; 8
-
-(set-face-foreground 'font-lock-comment-delimiter-face "#58c924")          ; green
-(set-face-foreground 'font-lock-preprocessor-face      "yellow")
-(set-face-foreground 'font-lock-negation-char-face     "red")
 
 ;; white spaces
 (setq whitespace-action '(cleanup auto-cleanup))
@@ -181,62 +148,41 @@
                          newline-mark
                          ))
 (setq whitespace-display-mappings
-      '((tab-mark     ?\t    [?\xbb ?\t] )
-        ;(newline-mark ?\n    [?\x2039 ?\n] )
-        (newline-mark ?\n    [?\x21A9 ?\n] )))
+      `((tab-mark     ?\t    [?\xbb ?\t] )
+        (newline-mark ,@my-newline-mark)))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(blink-cursor-blinks 0)
- '(blink-cursor-delay 60)
- '(blink-cursor-interval 0.1)
- '(blink-cursor-mode t)
- '(comment-column 2)
- '(package-selected-packages (quote (rust-mode magit yaml-mode go-mode enh-ruby-mode)))
- '(show-paren-delay 0)
- '(visible-cursor t))
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(region ((t (:background "dark slate gray"))))
- '(show-paren-match ((t (:background "DarkCyan" :foreground "LightYellow"))))
- '(whitespace-empty ((t (:background "saddle brown" :foreground "firebrick"))))
- '(whitespace-newline ((t (:foreground "gray42"))))
- '(whitespace-tab ((t (:foreground "gray35"))))
- '(whitespace-trailing ((t (:background "gray30")))))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq indent-tabs-mode nil)
             (setq comment-column 4)))
 
-(load-library "wrid.el")
-(setq wrid-directory "~/D/Diary")
+(add-hook 'clojure-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'lisp-interacton-mode-hook 'rainbow-delimiters-mode)
 
-(defun now ()
-  (interactive)
-  (insert (format-time-string "%H:%M:%S" (current-time))))
-
-(defun sewing-machine (&optional length)
-  (interactive "P")
-  (if (equal length nil) (setq length 59))
-  (back-to-indentation)
-  (reindent-then-newline-and-indent)
-  (previous-line)
-  (indent-for-tab-command)
-  (comment-indent)
-  (while (< (current-column) length) (insert "- "))
-  (back-to-indentation)
-  (next-line))
+(global-company-mode)
+(setq company-global-modes '(not outline-mode text-mode))
+(setq company-idle-delay 0)
+(setq company-minimum-prefix-length 3)
+(setq company-selection-wrap-around t)
+(define-key company-active-map (kbd "C-h") nil)
+(define-key company-active-map (kbd "C-M-p") 'company-select-previous)
+(define-key company-active-map (kbd "C-M-n") 'company-select-next)
+(define-key company-search-map (kbd "C-M-p") 'company-select-previous)
+(define-key company-search-map (kbd "C-M-n") 'company-select-next)
+(define-key company-active-map (kbd "C-M-m") 'company-complete-selection)
+(define-key company-search-map (kbd "C-M-m") 'company-complete-selection)
+(define-key company-active-map (kbd "C-j") 'company-complete-selection)
+(define-key company-search-map (kbd "C-j") 'company-complete-selection)
+;(define-key company-active-map (kbd "M-m") 'company-complete-selection)
+(define-key company-search-map (kbd "M-m") 'company-complete-selection)
 
 (global-set-key "\C-q\C-g" 'keyboard-quit)
-(global-set-key "\C-q\C-d" 'now)
+(global-set-key "\C-q\C-d" 'insert-now)
 (global-set-key "\C-q\C-n" 'sewing-machine)
 (global-set-key "\C-qv" 'describe-variable)
 (global-set-key "\C-qk" 'describe-key)
@@ -246,7 +192,7 @@
                 (lambda ()
                   (interactive)
                   (outline-insert-heading)
-                  (now)
+                  (insert-now)
                   (insert " ")))
 
 ;; copy bindings META to Super
@@ -258,3 +204,18 @@
      (kbd (format "s-%c" i))
      (lookup-key global-map (kbd (format "M-%c" i))))
     (setq i (1+ i))))
+
+(global-set-key (kbd "A-<tab>") 'other-frame)
+(global-set-key (kbd "M-t") 'other-frame)
+
+(defun revert-buffer-no-confirm ()
+  (interactive)
+  (cond ((not (buffer-modified-p))
+         (revert-buffer :ignore-auto :noconfirm)
+         (read-only-mode)
+         (message "Reverted."))
+        (t
+         (error "The buffer has been modified"))))
+
+(global-set-key "\M-r" 'revert-buffer-no-confirm)
+

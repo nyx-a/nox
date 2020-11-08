@@ -2,6 +2,8 @@
 PS1='\u@\h \w\$ '
 HISTIGNORE="&:ls:cd:fg:jobs:pushd:popd:dirs:history"
 
+bind '"\C-j":"\t\C-m"'
+
 complete -d {cd,pushd,rmdir}
 complete -c {which,type}
 complete -u {su,finger}
@@ -16,6 +18,7 @@ alias grep='grep --color=auto'
 alias emacs='emacs -nw'
 alias u='pushd'
 alias o='popd'
+alias exa='exa -l -snew'
 
 export TERM="xterm-256color"
 
@@ -62,3 +65,9 @@ export PATH=/usr/local/opt/qt5/bin:$PATH
 export NVM_DIR="$HOME/.nvm"
 [ -s "/usr/local/opt/nvm/nvm.sh" ] && . "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
 [ -s "/usr/local/opt/nvm/etc/bash_completion" ] && . "/usr/local/opt/nvm/etc/bash_completion"  # This loads nvm bash_completion
+
+export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
+
+# qmk
+QMK_HOME="~/qmk"
+
