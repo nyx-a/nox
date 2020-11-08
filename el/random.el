@@ -26,8 +26,10 @@
              (apply 'string (sequence ?0 ?9))))
 
 (defun make-password (length)
+  "make random password"
+  (interactive "nLength you need: ")
   (let ((tube ""))
     (dotimes (i length)
       (setq tube (format "%s%c" tube (random-choice chars))))
-    tube))
+    (insert tube)))
 
