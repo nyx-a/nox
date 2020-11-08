@@ -30,6 +30,7 @@
   (find-file (wrid-path time))
   (if (zerop (buffer-size)) (wrid-insert-header time))
   (goto-char (point-max))
+  (outline-show-subtree)
   (read-only-mode 0)
   (message
    (format-time-string
