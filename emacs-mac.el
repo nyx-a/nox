@@ -63,13 +63,15 @@
 (setq delete-old-versions t)
 
 (setq version-control t)
-
 (icomplete-mode 1)
+
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 
 (auto-image-file-mode t)
 (auto-compression-mode t)
+
+
 
 (setq indent-tabs-mode nil)
 
@@ -78,9 +80,8 @@
   (setq tab-stop-list ())
   (while (< num 256)
     (setq tab-stop-list (append tab-stop-list (list num)))
-    (setq num (+ num tab-width))
-    )
-  )
+    (setq num (+ num tab-width))))
+
 (set-tab-width 4)
 
 
@@ -153,6 +154,7 @@
 
 
 
+
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq indent-tabs-mode nil)
@@ -180,6 +182,7 @@
 (define-key company-search-map (kbd "C-j") 'company-complete-selection)
 ;(define-key company-active-map (kbd "M-m") 'company-complete-selection)
 (define-key company-search-map (kbd "M-m") 'company-complete-selection)
+
 
 (global-set-key "\C-q\C-g" 'keyboard-quit)
 (global-set-key "\C-q\C-d" 'insert-now)
