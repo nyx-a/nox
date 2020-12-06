@@ -1,0 +1,12 @@
+#! /usr/bin/env ruby
+
+pattern = eval ARGV.first rescue nil
+if Regexp === pattern
+  ARGV.shift
+end
+
+# perform unstable sort
+ARGF.read.lines.sort_by do
+  pattern&.match(_1) ? $& : _1
+end.each &:display
+
