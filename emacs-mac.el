@@ -1,5 +1,6 @@
 
 (require 'seq)
+(require 'subr-x)
 
 (setq hostname (let*
                    ((host (system-name))
@@ -16,7 +17,8 @@
 (require 'package)
 (add-to-list
  'package-archives
- '("melpa" . "http://melpa.milkbox.net/packages/")
+ '("melpa" . "https://elpa.gnu.org/packages/")
+ ;;'("melpa" . "http://melpa.milkbox.net/packages/")
  t)
 (package-initialize)
 
@@ -32,8 +34,8 @@
              (jp-fontspec (font-spec :family my-jpfont)))
         (set-face-attribute 'default nil :family my-asciifont :height h)
         (set-fontset-font nil 'japanese-jisx0208 jp-fontspec))
-      (set-frame-height (next-frame) 60)
-      (set-frame-width (next-frame) 70)
+      (set-frame-height (next-frame) my-frame-height)
+      (set-frame-width (next-frame) my-frame-width)
       (set-scroll-bar-mode nil)
       (tool-bar-mode 0)
       (set-frame-parameter (selected-frame) 'alpha my-window-alpha)))
@@ -145,8 +147,8 @@
                          trailing       ; 行末
                          tabs           ; タブ
                          tab-mark
-                         newline
-                         newline-mark
+                         ;;newline
+                         ;;newline-mark
                          ))
 (setq whitespace-display-mappings
       `((tab-mark     ?\t    [?\xbb ?\t] )
@@ -221,4 +223,10 @@
          (error "The buffer has been modified"))))
 
 (global-set-key "\M-r" 'revert-buffer-no-confirm)
+
+;; rust-mode
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq rust-indent-offset 2)))
 
