@@ -22,7 +22,7 @@ alias exa='exa -l -snew'
 
 export TERM="xterm-256color"
 
-export PATH='~/nox/bin:/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin:~/.roswell/bin'
+export PATH='~/bin:~/nox/bin:/usr/local/bin:/usr/local/sbin:/bin:/sbin:/usr/bin:/usr/sbin:~/.roswell/bin'
 
 export LDFLAGS="-L/usr/local/opt/readline/lib"
 export CPPFLAGS="-I/usr/local/opt/readline/include"

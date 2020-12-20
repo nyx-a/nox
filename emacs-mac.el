@@ -1,5 +1,6 @@
 
 (require 'seq)
+(require 'subr-x)
 
 (setq hostname (let*
                    ((host (system-name))
@@ -145,8 +146,8 @@
                          trailing       ; 行末
                          tabs           ; タブ
                          tab-mark
-                         newline
-                         newline-mark
+                         ;newline
+                         ;newline-mark
                          ))
 (setq whitespace-display-mappings
       `((tab-mark     ?\t    [?\xbb ?\t] )
@@ -194,9 +195,10 @@
 (global-set-key "\C-q\C-m"
                 (lambda ()
                   (interactive)
-                  (outline-insert-heading)
+                  (move-end-of-line nil)
+                  (insert "(")
                   (insert-now)
-                  (insert " ")))
+                  (insert ")")))
 
 ;; copy bindings META to Super
 (let* ((start ?a)
@@ -221,4 +223,9 @@
          (error "The buffer has been modified"))))
 
 (global-set-key "\M-r" 'revert-buffer-no-confirm)
+
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq rust-indent-offset 2)))
 
