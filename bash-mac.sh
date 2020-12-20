@@ -53,9 +53,6 @@ fi
 GOPATH='~/GO'
 export PATH="$GOPATH/bin:$PATH"
 
-# rust
-export PATH="$HOME/.cargo/bin:$PATH"
-
 # qt
 export CPPFLAGS="-I/usr/local/opt/qt5/include"
 export LDFLAGS="-L/usr/local/opt/qt5/lib"
@@ -71,3 +68,4 @@ export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
 # qmk
 QMK_HOME="~/qmk"
 
+source "$HOME/.cargo/env"
