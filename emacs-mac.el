@@ -196,9 +196,10 @@
 (global-set-key "\C-q\C-m"
                 (lambda ()
                   (interactive)
-                  (outline-insert-heading)
+                  (move-end-of-line nil)
+                  (insert "(")
                   (insert-now)
-                  (insert " ")))
+                  (insert ")")))
 
 ;; copy bindings META to Super
 (let* ((start ?a)
@@ -224,7 +225,6 @@
 
 (global-set-key "\M-r" 'revert-buffer-no-confirm)
 
-;; rust-mode
 (add-hook 'rust-mode-hook
           (lambda ()
             (setq indent-tabs-mode nil)
