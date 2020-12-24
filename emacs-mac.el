@@ -198,7 +198,7 @@
                   (move-end-of-line nil)
                   (insert "(")
                   (insert-now)
-                  (insert ")")))
+                  (insert ")\n")))
 
 ;; copy bindings META to Super
 (let* ((start ?a)
