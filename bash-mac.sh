@@ -2,8 +2,6 @@
 PS1='\u@\h \w\$ '
 HISTIGNORE="&:ls:cd:fg:jobs:pushd:popd:dirs:history"
 
-bind '"\C-j":"\t\C-m"'
-
 complete -d {cd,pushd,rmdir}
 complete -c {which,type}
 complete -u {su,finger}

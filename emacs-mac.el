@@ -15,11 +15,10 @@
 (setq wrid-directory "~/D/Diary")
 
 (require 'package)
-(add-to-list
- 'package-archives
- '("melpa" . "https://elpa.gnu.org/packages/")
- ;;'("melpa" . "http://melpa.milkbox.net/packages/")
- t)
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")
+        ("gnu" . "https://elpa.gnu.org/packages/")))
 (package-initialize)
 
 (setq inhibit-splash-screen t)
