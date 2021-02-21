@@ -55,11 +55,11 @@
  '(font-lock-warning-face    ((t (:foreground "#d39" :bold t))))
 
  `(mode-line
-   ((t (:foreground ,mode-line-fg :background ,mode-line-bg :box nil))))
+   ((t (:foreground ,mode-line-fg :background ,mode-line-bg :box (:line-width 3 :color ,mode-line-bg)))))
  '(mode-line-highlight
    ((t (:foreground "#fff" :box nil))))
  '(mode-line-inactive
-   ((t (:foreground "#ddc" :background "#252525" :box nil))))
+   ((t (:foreground "#ddc" :background "#252525" :box (:line-width 3 :color "#252525")))))
 
  '(region ((t (:background "#455"))))
  '(show-paren-match ((t (:background "#477"))))
