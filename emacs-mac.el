@@ -204,7 +204,7 @@
 (let* ((start ?a)
        (end   ?z)
        (i     start))
-  (while (< i end)
+  (while (<= i end)
     (global-set-key
      (kbd (format "s-%c" i))
      (lookup-key global-map (kbd (format "M-%c" i))))
