@@ -51,10 +51,10 @@ fi
 GOPATH='~/GO'
 export PATH="$GOPATH/bin:$PATH"
 
-# qt
-export CPPFLAGS="-I/usr/local/opt/qt5/include"
-export LDFLAGS="-L/usr/local/opt/qt5/lib"
-export PATH=/usr/local/opt/qt5/bin:$PATH
+# # qt
+# export CPPFLAGS="-I/usr/local/opt/qt5/include"
+# export LDFLAGS="-L/usr/local/opt/qt5/lib"
+# export PATH=/usr/local/opt/qt5/bin:$PATH
 
 # nvm
 export NVM_DIR="$HOME/.nvm"
@@ -67,3 +67,5 @@ export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
 QMK_HOME="~/qmk"
 
 source "$HOME/.cargo/env"
+
+export LEIN_JVM_OPTS=""
