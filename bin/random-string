@@ -1,0 +1,25 @@
+#! /usr/bin/env bb
+
+(defn char-range [s e]
+  (map char (range (int s) (inc (int e)))))
+
+(def my-char-set
+  (concat
+   (char-range \a \z)
+   (char-range \A \Z)
+   (char-range \0 \9)))
+
+(defn random-string
+  ([t]
+   (random-string t []))
+  ([t v]
+   (if (< 0 t)
+     (random-string (dec t) (cons (rand-nth my-char-set) v))
+     (clojure.string/join v))))
+
+(println
+ (random-string
+  (if *command-line-args*
+    (-> *command-line-args* first Integer.)
+    8)))
+
