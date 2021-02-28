@@ -12,7 +12,7 @@
 (load-library "random.el")
 (load-library "misc.el")
 (load-library "wrid.el")
-(setq wrid-directory "~/D/Diary")
+(setq wrid-directory "~/wrid")
 
 (require 'package)
 (setq package-archives
@@ -55,6 +55,10 @@
 
 (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
+
+(add-to-list 'interpreter-mode-alist '("bb" . clojure-mode))
+(add-to-list 'interpreter-mode-alist '("clojure" . clojure-mode))
+(add-to-list 'interpreter-mode-alist '("clj" . clojure-mode))
 
 (setq backup-directory-alist '(("." . "~/.backupfiles")))
 (setq backup-by-copying nil)
@@ -99,8 +103,7 @@
 
 (global-set-key "\C-\\" 'indent-region)
 
-(global-set-key "\M-n"(lambda () (interactive) (switch-to-buffer nil)))
-(global-set-key "\M-p"(lambda () (interactive) (switch-to-buffer nil)))
+(global-set-key (kbd "C-;") (lambda () (interactive) (switch-to-buffer nil)))
 
 (global-set-key "\M-o" 'toggle-truncate-lines)
 (global-set-key "\M-g" 'goto-line)
@@ -153,18 +156,16 @@
       `((tab-mark     ?\t    [?\xbb ?\t] )
         (newline-mark ,@my-newline-mark)))
 
-
-
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (setq indent-tabs-mode nil)
             (setq comment-column 4)))
 
-(add-hook 'clojure-mode-hook 'enable-paredit-mode)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+(add-hook 'clojure-mode-hook         'enable-paredit-mode)
+(add-hook 'clojure-mode-hook         'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook      'enable-paredit-mode)
+(add-hook 'emacs-lisp-mode-hook      'rainbow-delimiters-mode)
 (add-hook 'lisp-interacton-mode-hook 'enable-paredit-mode)
-(add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'lisp-interacton-mode-hook 'rainbow-delimiters-mode)
 
 (global-company-mode)
