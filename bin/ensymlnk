@@ -1,0 +1,69 @@
+#! /usr/bin/env ruby
+
+require 'optparse'
+
+def giveup m
+  puts m
+  puts
+  exit
+end
+
+def glob o
+  Dir.glob File.directory?(o) ? File.join(o, '*') : o
+end
+
+def read path
+  open(path, 'rb').read
+end
+
+def equal a, b
+  read(a) == read(b)
+end
+
+def same_name_same_content_in_cd path
+  dst = File.expand_path path
+  cur = File.expand_path File.basename path
+  dst != cur and File.file?(cur) and !File.symlink?(cur) and equal(dst, cur)
+end
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - -
+
+commentout = true
+opt = OptionParser.new
+opt.on("--uncomment", "Uncomment and execute actually.")  do
+  commentout = false
+end
+opt.parse! ARGV
+
+if ARGV.empty?
+  giveup "$ #{File.basename $0} [Source Directory] (--uncomment)"
+end
+
+duplicates = ARGV
+  .map(&method(:glob))
+  .flatten
+  .filter(&method(:same_name_same_content_in_cd))
+
+if duplicates.empty?
+  giveup "There is no file that meets that requirement."
+end
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+longest = duplicates.map{ File.basename(_1).size }.max
+
+for x in duplicates
+  rm = "rm %-*s" % [longest, File.basename(x)]
+  ln = "ln -s #{x}"
+  cmd = "#{rm} ; #{ln}"
+
+  if commentout
+    puts "# #{cmd}"
+  else
+    puts cmd
+    break if !system(cmd)
+  end
+end
+
+puts
+
