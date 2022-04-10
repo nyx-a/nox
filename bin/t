@@ -1,2 +1,2 @@
-#! /usr/bin/env ruby
-Time.now.strftime("%Y%m%d_%a_%H%M%S").display
+#! /bin/sh
+LC_TIME=C date "+%Y%m%d_%a_%H%M%S"
