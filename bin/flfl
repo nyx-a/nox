@@ -1,0 +1,89 @@
+#! /usr/bin/env perl
+
+use strict;
+
+use constant SCRPT_NAMAE    => 'フリフラ';
+use constant SCRPT_NAME     => 'FLIPFLAP';
+use constant SCRPT_AUTHOR   => 'nyx-a';
+use constant SCRPT_VERSION  => '7.2.1'; # symbolic-linkをスキップするようにした
+
+use File::stat;
+use File::Compare;
+
+
+# =========================================================================== #
+
+# 末尾に '~' を一つ付けてリネーム
+# 引数のファイル名は存在しなくなる / リネーム後のファイル名を返す
+sub add_tilde ($) {
+    my $fn = shift;
+    my $newfn = $fn.'~';
+    add_tilde($newfn) if (-e $newfn);
+    rename ($fn, $newfn) or die "rename failure : $!";
+}
+
+# 第1引数のファイル名に、第2引数の接中辞を交えてリネーム
+# 引数のファイル名は存在しなくなる / リネーム後のファイル名を返す
+sub backupnize ($$) {
+    my ($filename, $command) = @_;
+    my $newfilename = $filename.'~'.$command.'~';
+    add_tilde($newfilename) if (-e $newfilename);
+    rename ($filename, $newfilename) or die "rename($filename) failure : $!";
+    return $newfilename;
+}
+
+sub escape_whitespace ($) {
+    my $filename = shift;
+    my $ngforfname = ' ';
+    $filename =~ s/([$ngforfname])/\\\1/g;
+    return $filename;
+}
+
+# =========================================================================== #
+
+
+if (@ARGV < 2) {
+    print SCRPT_NAME . ' [' . SCRPT_VERSION . "]\n";
+    print "  $0 [command] file (file2) (file3) ... \n\n";
+    exit;
+}
+my $command = shift;
+
+print qq("$command"\n);
+foreach my $clfile (@ARGV) {
+    foreach my $fn (glob escape_whitespace $clfile) {
+        print '  ';
+        if (-e $fn) {
+            if (-f $fn and (not -l $fn)) {
+                unless ($fn =~ /~$/) {
+
+                    my $mode = stat($fn)->mode;
+                    my $original = backupnize($fn, $command);
+                    system "cat '$original' | $command > $fn";
+                    chmod $mode, $fn;
+
+                    if (stat($fn)->size == 0) {
+                        print '[0  ]'; #: FILE SIZE ZERO
+                        unlink $fn;
+                        rename ($original, $fn) or die "rename failure : $!";
+                    } else {
+                        if (compare($original, $fn) == 0) {
+                            print '[  =]'; #: SAME
+                            unlink $original;
+                        } else {
+                            print '[ * ]'; #: SUCCESS
+                        }
+                    }
+                } else {
+                    print '[~  ]'; #: SKIP TILDE
+                }
+            } else {
+                print '[S  ]'; #: NOT PLANE FILE
+            }
+        } else {
+            print '[?  ]'; #: NOT EXIST
+        }
+        print " $fn\n";
+    }
+}
+print "\n";
