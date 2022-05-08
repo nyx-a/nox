@@ -69,3 +69,8 @@ QMK_HOME="~/qmk"
 source "$HOME/.cargo/env"
 
 export LEIN_JVM_OPTS=""
+
+# openJDK
+export PATH="$(brew --prefix)/opt/openjdk/bin:$PATH"
+export CPPFLAGS="-I$(brew --prefix)/opt/openjdk/include"
+

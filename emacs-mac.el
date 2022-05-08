@@ -1,6 +1,8 @@
 
 (require 'seq)
 (require 'subr-x)
+(require 'cl-lib)
+(require 'cl-seq) ;; for (seq-reduce)
 
 (setq hostname (let*
                    ((host (system-name))
@@ -12,7 +14,7 @@
 (load-library "random.el")
 (load-library "misc.el")
 (load-library "wrid.el")
-(setq wrid-directory "~/wrid")
+(setq wrid-directory "~/a/wrid")
 
 (require 'package)
 (setq package-archives
@@ -55,10 +57,12 @@
 
 (add-to-list 'auto-mode-alist '("\\.rb$" . enh-ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . enh-ruby-mode))
-
 (add-to-list 'interpreter-mode-alist '("bb" . clojure-mode))
 (add-to-list 'interpreter-mode-alist '("clojure" . clojure-mode))
 (add-to-list 'interpreter-mode-alist '("clj" . clojure-mode))
+
+(add-to-list 'magic-mode-alist '("^#!.*bb$" . clojure-mode))
+(add-to-list 'auto-mode-alist '("\\.mjs$" . javascript-mode))
 
 (setq backup-directory-alist '(("." . "~/.backupfiles")))
 (setq backup-by-copying nil)
@@ -130,6 +134,12 @@
    (kill-buffer)))
 
 (global-set-key "\C-q\t" 'self-insert-command)
+(global-set-key "\C-q)" 'self-insert-command)
+(global-set-key "\C-q}" 'self-insert-command)
+(global-set-key "\C-q]" 'self-insert-command)
+(global-set-key "\C-q(" 'self-insert-command)
+(global-set-key "\C-q{" 'self-insert-command)
+(global-set-key "\C-q[" 'self-insert-command)
 
 (setq auto-save-interval 1000)
 (setq auto-save-timeout 600)
@@ -161,6 +171,36 @@
             (setq indent-tabs-mode nil)
             (setq comment-column 4)))
 
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq rust-indent-offset 2)))
+
+(add-hook 'html-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq html-indent-offset 2)))
+
+(add-hook 'css-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq css-indent-offset 2)))
+
+(add-hook 'js-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)
+            (setq js-indent-level 2)))
+
+(add-hook 'c-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)))
+
+(add-hook 'outline-mode-hook
+          (lambda ()
+            (setq indent-tabs-mode nil)))
+
+(add-hook 'cider-repl-mode-hook      'enable-paredit-mode)
+(add-hook 'cider-repl-mode-hook      'rainbow-delimiters-mode)
 (add-hook 'clojure-mode-hook         'enable-paredit-mode)
 (add-hook 'clojure-mode-hook         'rainbow-delimiters-mode)
 (add-hook 'emacs-lisp-mode-hook      'enable-paredit-mode)
@@ -174,16 +214,23 @@
 (setq company-minimum-prefix-length 3)
 (setq company-selection-wrap-around t)
 (define-key company-active-map (kbd "C-h") nil)
+(define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 (define-key company-active-map (kbd "C-M-p") 'company-select-previous)
 (define-key company-active-map (kbd "C-M-n") 'company-select-next)
 (define-key company-search-map (kbd "C-M-p") 'company-select-previous)
 (define-key company-search-map (kbd "C-M-n") 'company-select-next)
+(define-key company-active-map (kbd "M-p") 'ignore)
+(define-key company-active-map (kbd "M-n") 'ignore)
+(define-key company-search-map (kbd "M-p") 'ignore)
+(define-key company-search-map (kbd "M-n") 'ignore)
 (define-key company-active-map (kbd "C-M-m") 'company-complete-selection)
 (define-key company-search-map (kbd "C-M-m") 'company-complete-selection)
 (define-key company-active-map (kbd "C-j") 'company-complete-selection)
 (define-key company-search-map (kbd "C-j") 'company-complete-selection)
+(define-key company-active-map (kbd "C-M-j") 'company-complete-selection)
+(define-key company-search-map (kbd "C-M-j") 'company-complete-selection)
 ;(define-key company-active-map (kbd "M-m") 'company-complete-selection)
-(define-key company-search-map (kbd "M-m") 'company-complete-selection)
+;(define-key company-search-map (kbd "M-m") 'company-complete-selection)
 
 
 (global-set-key "\C-q\C-g" 'keyboard-quit)
@@ -211,8 +258,8 @@
      (lookup-key global-map (kbd (format "M-%c" i))))
     (setq i (1+ i))))
 
-(global-set-key (kbd "A-<tab>") 'other-frame)
-(global-set-key (kbd "M-t") 'other-frame)
+;(global-set-key (kbd "A-<tab>") 'other-frame)
+;(global-set-key (kbd "M-t") 'other-frame)
 
 (defun revert-buffer-no-confirm ()
   (interactive)
@@ -225,8 +272,49 @@
 
 (global-set-key "\M-r" 'revert-buffer-no-confirm)
 
-(add-hook 'rust-mode-hook
-          (lambda ()
-            (setq indent-tabs-mode nil)
-            (setq rust-indent-offset 2)))
+;; CIDER
+(setq cider-show-error-buffer 'always)
+;;(setq cider-stacktrace-default-filters '(tooling dup java clj repl))
+;;(setq cider-stacktrace-positive-filters '(all)) ;; project
+;;(setq cider-show-error-buffer 'except-in-repl)
+;;(setq cider-show-error-buffer 'only-in-repl)
+;;(setq cider-stacktrace-detail-max 0)
+;;(setq cider-stacktrace-suppressed-errors t)
+;;(setq cider-stacktrace-fill-column nil)
 
+;; clojure-mode
+(defun clojure-indent-cond (indent-point state)
+  (goto-char (elt state 1))
+  (let ((pos -1)
+        (base-col (current-column)))
+    (forward-char 1)
+    ;; `forward-sexp' will error if indent-point is after
+    ;; the last sexp in the current sexp.
+    (condition-case nil
+        (while (and (<= (point) indent-point)
+                    (not (eobp)))
+          (clojure-forward-logical-sexp 1)
+          (cl-incf pos))
+      ;; If indent-point is _after_ the last sexp in the
+      ;; current sexp, we detect that by catching the
+      ;; `scan-error'. In that case, we should return the
+      ;; indentation as if there were an extra sexp at point.
+      (scan-error (cl-incf pos)))
+    (+ base-col (if (cl-evenp pos) 4 2))))
+
+(add-hook 'clojure-mode-hook
+          (lambda () (put-clojure-indent 'cond #'clojure-indent-cond)))
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("36ca8f60565af20ef4f30783aa16a26d96c02df7b4e54e9900a5138fb33808da" default)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

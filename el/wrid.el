@@ -61,7 +61,8 @@
 (defun wrid (&optional backday)
   "WRIte Diary / C-u Days back"
   (interactive "P")
-  (wrid-find-file (wrid-current-time backday)))
+  (wrid-find-file (wrid-current-time backday))
+  (setq backup-inhibited t))
 
 (defun wrid-ymd (text)
   "WRIte Diary at specified date"

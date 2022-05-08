@@ -6,21 +6,8 @@ complete -d {cd,pushd,rmdir}
 complete -c {which,type}
 complete -u {su,finger}
 
-alias ls='ls -lFtrG'
-alias pwd='pwd -P'
-alias dir='ls -C'
-alias cp='cp -ip'
-alias mv='mv -iv'
-alias rm='rm -v'
-alias diff='diff -u'
-alias grep='grep --color=auto'
-alias emacs='emacs -nw'
-alias u='pushd'
-alias o='popd'
-alias exa='exa -l -snew'
-alias s='git status -s'
-
 export PATH="~/nox/bin:$PATH"
+export LESS='-R'
 
 # BEGIN_KITTY_SHELL_INTEGRATION
 if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
@@ -39,3 +26,26 @@ if [ -d "${RBENV_ROOT}" ]; then
 fi
 
 . "$HOME/.cargo/env"
+
+alias ls='ls -lFtrG'
+alias pwd='pwd -P'
+alias dir='ls -C'
+alias cp='cp -ip'
+alias mv='mv -iv'
+alias rm='rm -v'
+alias grep='grep --color=auto'
+alias emacs='emacs -nw'
+alias u='pushd'
+alias o='popd'
+alias exa='exa -l -snew'
+alias s='git status -s'
+
+if [[ -x `which colordiff` ]]; then
+  alias diff='colordiff -u'
+else
+  alias diff='diff -u'
+fi
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
