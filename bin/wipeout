@@ -11,10 +11,8 @@ def filedate fname
   ].join(' ')
 end
 
-done = false
 Dir.glob(['*~', '.*~']) do |filename|
   puts filedate filename
   File.unlink filename
-  done = true
 end
-puts if done
+
