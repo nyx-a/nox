@@ -1,0 +1,10 @@
+
+[user]
+	name = nyx-a
+	email = nyx-a@live.jp
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = emacs -nw
