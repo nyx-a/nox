@@ -55,18 +55,18 @@
         (println (format "already exists \"%s\"" t))
         (println)
         (System/exit 1))
-      (f/move s t :replace-existing false :nofollow-links true))
+      (f/move s t {:replace-existing false :nofollow-links true}))
     {:bare s :tilde t}))
 
 (defn run [cmdopt org]
-  (let [tmp (shell (join cmdopt org))]
+  (let [tmp (shell (join [cmdopt org]))]
     (if (zero? (.length tmp))
       (do
         (.delete tmp)
         :empty)
       (do
         (move-into-tilde org)
-        (.renameTo tmp org)
+        (.renameTo tmp (java.io.File. org))
         :success))))
 
 (defn execute [command option files & {:keys [pretend]}]
@@ -74,8 +74,9 @@
         co (join [c option])]
     (doseq [f files]
       (print co f)
-      (if-not pretend
-        (print "->" (run [co f])))
+      (if (f/exists? f)
+        (if-not pretend (print " " (run co f)))
+        (print " / doesn't exist"))
       (println))))
 
 ;; ------------------------------------------------------------------
@@ -85,7 +86,7 @@
    *command-line-args*
    [["-c" "--command Command to apply"]
     ["-o" "--option Options for the command"]
-    ["-p" "--pretend" :default true]
+    ["-p" "--pretend" :default false]
     ["-h" "--help"]]))
 
 (when (or (-> args :options :help)
