@@ -9,10 +9,6 @@ complete -u {su,finger}
 export PATH="~/nox/bin:$PATH"
 export LESS='-R'
 
-# BEGIN_KITTY_SHELL_INTEGRATION
-if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; fi
-# END_KITTY_SHELL_INTEGRATION
-
 # homebrew
 eval "$(/opt/homebrew/bin/brew shellenv)"
 export HOMEBREW_NO_INSTALL_CLEANUP=true
@@ -49,3 +45,10 @@ fi
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
+
+# JAVA_OPTS
+# export JAVA_TOOL_OPTIONS="-Dapple.awt.application.appearance=system"
+
+# OPAM
+eval $(opam env)
+
